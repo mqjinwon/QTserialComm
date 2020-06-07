@@ -20,6 +20,10 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp
 
+#SOURCES += $$PWD/../../darknet/src/*.c
+
+#HEADERS += $$PWD/../../darknet/src/*.h
+#HEADERS += $$PWD/../../darknet/3rdparty/stb/include/*.h
 HEADERS += \
     mainwindow.h
 
@@ -28,5 +32,20 @@ FORMS += \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
+else: unix:!android: target.path = /opt/$${TARGET}/bin!isEmpty(target.path): INSTALLS += target
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../darknet/release/ -ldarknet
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../darknet/debug/ -ldarknet
+else:unix: LIBS += -L$$PWD/../../darknet/ -ldarknet
+
+INCLUDEPATH += $$PWD/../../darknet/include
+INCLUDEPATH += $$PWD/../../darknet/src
+
+#DEPENDPATH += $$PWD/../../darknet/include
+#DEPENDPATH += $$PWD/../../darknet/3rdparty/stb/include/*.h
+
+#opencv libaray
+INCLUDEPATH += /usr/local/include/opencv4
+LIBS += `pkg-config --libs opencv4`
+
+

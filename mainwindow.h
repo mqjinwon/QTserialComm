@@ -11,6 +11,7 @@ namespace Ui { class MainWindow; }
 
 QT_END_NAMESPACE
 
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -58,5 +59,6 @@ private:
     bool read_Flag = false;
     QByteArray readAllData = NULL;
     QByteArray realData = NULL;
+
 };
 #endif // MAINWINDOW_H
