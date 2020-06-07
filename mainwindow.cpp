@@ -19,11 +19,48 @@ MainWindow::MainWindow(QWidget *parent)
     openSerialPort();
     connect(m_serial, &QSerialPort::errorOccurred, this, &MainWindow::handleError);
     connect(m_serial, &QSerialPort::readyRead, this, &MainWindow::readData);
+
+    // TIMER로 slotTimerAlarm 함수를 계속 호출 할 수 있도록 한다
+    timer = new QTimer();
+    connect(timer, SIGNAL(timeout()), this, SLOT(slotTimerAlarm()));
+    timer->start(25);       //주기: ms단위
+
+    // 영상 처리 부분
+    //동영상 파일로부터 부터 데이터 읽어오기 위해 준비
+        cap.open("/home/jin/QTproject/QTserialComm/videoplayback.mp4");
+        if (!cap.isOpened())        {
+            printf("동영상 파일을 열수 없습니다. \n");
+        }
+
+        //동영상 플레이시 크기를  320x240으로 지정
+        cap.set(CAP_PROP_FRAME_WIDTH,1280);
+        cap.set(CAP_PROP_FRAME_HEIGHT,720);
+
+        namedWindow("video", 1);
+
+        // Number of classes in "obj.names"
+        // This is very rude method and in theory there must be much more elegant way.
+        classes = 0;
+        labels = get_labels(names_file);
+        while (labels[classes] != nullptr) {
+            classes++;
+        }
+        qDebug() << "Num of Classes " << classes << endl;
+
+        // -----------------------------------------------------------------------------------------------------------------
+        // Do actual logic of classes prediction.
+        // -----------------------------------------------------------------------------------------------------------------
+
+        // Load Darknet network itself.
+        net = load_network(cfg_file, weight_file, 0);
+        // In case of testing (predicting a class), set batch number to 1, exact the way it needs to be set in *.cfg file
+        set_batch_network(net, 1);
 }
 
 MainWindow::~MainWindow()
 {
     closeSerialPort();
+    free(labels);
     delete ui;
 }
 
@@ -146,4 +183,68 @@ void MainWindow::on_BTeraseWrite_clicked()
 void MainWindow::on_BTeraseRead_clicked()
 {
     ui->ReadDataText->clear();
+}
+
+void MainWindow::slotTimerAlarm()
+{
+    //웹캡으로부터 한 프레임을 읽어옴
+    cap >> frame;
+
+    Mat rectImg(frame);
+
+    image sized = letterbox_image(mat_to_image(frame), net->w, net->h);
+
+    // Uncomment this if you need sort predicted result.
+    //    layer l = net->layers[net->n - 1];
+
+    // Get actual data associated with test image.
+    float *frame_data = sized.data;
+
+    // Do prediction.
+    double time = what_time_is_it_now();
+    network_predict(*net, frame_data);
+    qDebug() << "'" << input << "' predicted in " << (what_time_is_it_now() - time) << " sec.";
+
+    // Get number fo predicted classes (objects).
+    int num_boxes = 0;
+    detection *detections = get_network_boxes(net, frame.cols, frame.rows, thresh, hier_thresh, nullptr, 1, &num_boxes, 0);
+    qDebug() << "Detected " << num_boxes << " obj, class " << detections->classes;
+
+
+    // Uncomment this if you need sort predicted result.
+    //    do_nms_sort(detections, num_boxes, l.classes, nms);
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Print results.
+    // -----------------------------------------------------------------------------------------------------------------
+
+    // Iterate over predicted classes and print information.
+    for (int8_t i = 0; i < num_boxes; ++i) {
+        for (uint8_t j = 0; j < classes; ++j) {
+            if (detections[i].prob[j] > thresh) {
+                // More information is in each detections[i] item.
+                qDebug() << labels[j] << " " << (int16_t) (detections[i].prob[j] * 100) << "\t\t";
+                qDebug() << " x: " << detections[i].bbox.x << " y: " << detections[i].bbox.y
+                     << " w: " << detections[i].bbox.w  << " h: " << detections[i].bbox.h <<endl;
+
+                rectangle(rectImg, Point((detections[i].bbox.x - detections[i].bbox.w/2.)*rectImg.cols,
+                                         (detections[i].bbox.y - detections[i].bbox.h)*rectImg.rows),
+                                   Point((detections[i].bbox.x + detections[i].bbox.w/2.)*rectImg.cols,
+                                    (detections[i].bbox.y + detections[i].bbox.h)*rectImg.rows), Scalar(155, 155, 155) );
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Free resources.
+    // -----------------------------------------------------------------------------------------------------------------
+
+    free_detections(detections, num_boxes);
+    free_image(sized);
+
+    QImage imgIn= QImage((uchar*) rectImg.data, rectImg.cols, rectImg.rows, rectImg.step, QImage::Format_RGB888).rgbSwapped();
+    //QImage imgIn((uchar*)rectImg.data, rectImg.cols, rectImg.rows, rectImg.step1(), QImage::Format_RGB32);
+
+    ui->jImg->setPixmap(QPixmap::fromImage(imgIn));
+    ui->jImg->show();
 }
