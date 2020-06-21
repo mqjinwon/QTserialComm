@@ -32,16 +32,14 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin!isEmpty(target.path): INSTALLS += target
-
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../darknet/release/ -ldarknet
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../darknet/debug/ -ldarknet
 else:unix: LIBS += -L$$PWD/../../darknet/ -ldarknet
 
 INCLUDEPATH += $$PWD/../../darknet/include
+DEPENDPATH += $$PWD/../../darknet/include
 INCLUDEPATH += $$PWD/../../darknet/src
+DEPENDPATH += $$PWD/../../darknet/src
 
 #DEPENDPATH += $$PWD/../../darknet/include
 #DEPENDPATH += $$PWD/../../darknet/3rdparty/stb/include/*.h
@@ -49,5 +47,3 @@ INCLUDEPATH += $$PWD/../../darknet/src
 #opencv libaray
 INCLUDEPATH += /usr/local/include/opencv4
 LIBS += `pkg-config --libs opencv4`
-
-

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1189</width>
-    <height>573</height>
+    <width>1280</width>
+    <height>570</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>471</width>
+      <width>531</width>
       <height>551</height>
      </rect>
     </property>
@@ -103,8 +103,8 @@
    <widget class="QLabel" name="imgLabel">
     <property name="geometry">
      <rect>
-      <x>680</x>
-      <y>10</y>
+      <x>750</x>
+      <y>20</y>
       <width>301</width>
       <height>31</height>
      </rect>
@@ -116,14 +116,91 @@
    <widget class="QLabel" name="jImg">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>110</y>
-      <width>619</width>
-      <height>361</height>
+      <x>580</x>
+      <y>80</y>
+      <width>640</width>
+      <height>360</height>
      </rect>
     </property>
     <property name="text">
-     <string>img</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:36pt; font-weight:600;&quot;&gt;image&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="isDetectBT">
+    <property name="geometry">
+     <rect>
+      <x>1000</x>
+      <y>520</y>
+      <width>240</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Detect image</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="cameraConstant">
+    <property name="geometry">
+     <rect>
+      <x>760</x>
+      <y>520</y>
+      <width>100</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>100</width>
+      <height>40</height>
+     </size>
+    </property>
+    <property name="toolTip">
+     <string/>
+    </property>
+    <property name="plainText">
+     <string>-0.18</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>520</y>
+      <width>200</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#aa5500;&quot;&gt;camera constant :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="changeConstant">
+    <property name="geometry">
+     <rect>
+      <x>870</x>
+      <y>520</y>
+      <width>120</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: oblique 9pt &quot;Sans Serif&quot;;</string>
+    </property>
+    <property name="text">
+     <string> change constant</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="cupInfo">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>450</y>
+      <width>640</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;cup info&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
   </widget>

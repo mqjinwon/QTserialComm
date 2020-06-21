@@ -6,9 +6,8 @@
 
 cv::Mat image_to_mat(image img);
 
-
 image mat_to_image(cv::Mat mat);
 
-
+image resize_image(image im, int w, int h);
 
 #endif // IMGFORMAT_H
